@@ -1,0 +1,1 @@
+"""Definição do diretório como um módulo Python"""

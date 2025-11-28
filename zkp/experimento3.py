@@ -1,4 +1,6 @@
-from teste import *
+from utility import *
+
+# ----------------------- Experimento 3: Medição de Desvinculação ------------------
 
 def simulate_proof_generation(num_voters, proofs_per_voter, insecure=False):
     """
@@ -9,7 +11,7 @@ def simulate_proof_generation(num_voters, proofs_per_voter, insecure=False):
     
     for i in range(num_voters):
         # Geração da Credencial Secreta
-        params = setup(p_bits=128)
+        params = setup(p_bits=128, print_output=False)
         a, A = keygen(params)
         real_id = f"Voter_{i}"
         
@@ -68,16 +70,3 @@ def measure_unlinkability(simulated_data):
         "Grupos com Provas Repetidas": repeat_count,
         "Taxa de Desvinculação (Não Repetição)": unlinkability_rate
     }
-
-# Rodando teste seguro utilizando funções implementadas corretamente (100% Unlinkability)
-print("Teste de Unlinkability com Provas Seguras:\n")
-simulated_data = simulate_proof_generation(num_voters=20, proofs_per_voter=5)
-unlinkability_results = measure_unlinkability(simulated_data)
-print(unlinkability_results)
-
-# Rodando teste inseguro utilizando função de prova insegura (Unlinkability < 100%)
-# Devido à menor entropia em y, esperamos que algumas provas se repitam.
-print("\nTeste de Unlinkability com Geração de Provas com Baixa Entropia:\n")
-simulated_data = simulate_proof_generation(num_voters=20, proofs_per_voter=5, insecure=True)
-unlinkability_results = measure_unlinkability(simulated_data)
-print(unlinkability_results)

@@ -76,13 +76,15 @@ class PublicParams:
     q: int
     g: int
 
-def setup(p_bits=512):
+def setup(p_bits=512, print_output=True):
     """
     Setup: gera p (safe prime), q=(p-1)/2 e um gerador g do subgrupo de ordem q.
     p_bits: tamanho em bits do primo p (default 512 para demonstração).
     Retorna PublicParams.
     """
-    print(f'Gerando safe prime p com {p_bits} bits (isso pode levar alguns segundos)...')
+    if print_output:
+        print(f'Gerando safe prime p com {p_bits} bits (isso pode levar alguns segundos)...')
+
     p, q = generate_safe_prime(p_bits)
     # encontrar generator g: escolher h aleatório e calcular g = h^((p-1)/q) mod p, garantir g > 1
     e = (p - 1) // q
@@ -91,7 +93,9 @@ def setup(p_bits=512):
         g = pow(h, e, p)
         if g > 1:
             break
-    print(f'Parâmetros gerados: p ({p.bit_length()} bits), q ({q.bit_length()} bits), g gerador encontrado.')
+    if print_output:
+        print(f'Parâmetros gerados: p ({p.bit_length()} bits), q ({q.bit_length()} bits), g gerador encontrado.')
+
     return PublicParams(p=p, q=q, g=g)
 
 def keygen(params: PublicParams):

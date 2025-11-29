@@ -1,4 +1,6 @@
-from utility import *
+import time
+
+from zkp.utility import *
 
 # ----------------------- Experimento 4: Performance e Escalabilidade ------------------
 

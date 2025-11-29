@@ -1,4 +1,4 @@
-import secrets, hashlib, time, math
+import secrets, hashlib
 from dataclasses import dataclass
 
 # ----------------------------- utilitários criptográficos -----------------------------
@@ -67,6 +67,25 @@ def hash_to_zq(A, Y, q, p=None):
     data = int_to_bytes(A, blen) + int_to_bytes(Y, blen)
     digest = hashlib.sha256(data).digest()
     return int.from_bytes(digest, 'big') % q
+
+
+def hash_to_zq_insecure(A, Y, q, p=None):
+    """
+    Hash(A || Y) -> integer mod q
+    
+    Utiliza uma simples soma dos bytes para a realização do hash
+    ao invés da utilização de um algoritmo como o SHA-256
+    """
+
+    if p is not None:
+        blen = (p.bit_length() + 7) // 8
+    else:
+        # comprimentos relativos
+        blen = max((A.bit_length() + 7)//8, (Y.bit_length() + 7)//8)
+    data = int_to_bytes(A, blen) + int_to_bytes(Y, blen)
+    digest = sum(data)
+    return digest % q
+
 
 # ----------------------------- API do protocolo --------------------------------------
 

@@ -1,4 +1,4 @@
-from utility import *
+from zkp.utility import *
 
 # ----------------------- Experimento 5: Robustez Contra Ataques -----------------------
 

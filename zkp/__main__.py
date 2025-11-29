@@ -1,11 +1,11 @@
 
-import secrets, hashlib, time, math
-from dataclasses import dataclass
-from utility import *
-from experimento1 import experimento_funcional
-from experimento3 import simulate_proof_generation, measure_unlinkability
-from experimento4 import experimento_performance_scalabilidade, print_results
-from experimento5 import experimento_robustez
+from zkp.utility import *
+
+from zkp.experimento1 import experimento_funcional
+from zkp.experimento2 import experimento_resistencia
+from zkp.experimento3 import simulate_proof_generation, measure_unlinkability
+from zkp.experimento4 import experimento_performance_scalabilidade, print_results
+from zkp.experimento5 import experimento_robustez
 
 # ----------------------------- Execução dos experimentos -------------------------------
 def main(run_perf=False,run_robust = False):
@@ -22,6 +22,13 @@ def main(run_perf=False,run_robust = False):
     print('\nTeste adicional de segurança: prova válida com A trocado (deve ser rejeitada)')
     print('Verificação com A correto:', verificar_prova(A0, Y0, r0, params))
     print('Verificação com A trocado:', verificar_prova(A1, Y0, r0, params))
+
+    # -------- Exemplo de execução do Experimento 2 ---------------
+    print("\nTeste de Resistência com Prova e Hash seguros:\n")
+    experimento_resistencia()
+    
+    print("\nTeste de Resistência com Prova e Hash inseguros:\n")
+    experimento_resistencia(insecure=True)
 
     # -------- Exemplo de execução do Experimento 3  --------------
     print("\n---------- EXECUTANDO EXPERIMENTO 3 - MEDIÇÃO DE DESVINCULAÇÃO ----------\n")

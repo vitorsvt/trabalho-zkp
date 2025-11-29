@@ -1,4 +1,4 @@
-from utility import *
+from zkp.utility import *
 
 # ----------------------- Experimento 3: Medição de Desvinculação ------------------
 

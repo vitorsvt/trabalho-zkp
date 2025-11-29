@@ -24,6 +24,7 @@ def main(run_perf=False,run_robust = False):
     print('Verificação com A trocado:', verificar_prova(A1, Y0, r0, params))
 
     # -------- Exemplo de execução do Experimento 2 ---------------
+    print("\n---------- EXECUTANDO EXPERIMENTO 2 - TESTE DE RESISTÊNCIA ----------\n")
     print("\nTeste de Resistência com Prova e Hash seguros:\n")
     experimento_resistencia()
     

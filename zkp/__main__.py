@@ -26,7 +26,7 @@ def main(run_perf=False,run_robust = False):
     # -------- Exemplo de execução do Experimento 2 ---------------
     print("\n---------- EXECUTANDO EXPERIMENTO 2 - TESTE DE RESISTÊNCIA ----------\n")
     print("\nTeste de Resistência com Prova e Hash seguros:\n")
-    # experimento_resistencia()
+    experimento_resistencia()
     
     print("\nTeste de Resistência com Prova e Hash inseguros:\n")
     experimento_resistencia(insecure=True)

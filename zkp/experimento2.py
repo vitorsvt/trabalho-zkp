@@ -10,6 +10,7 @@ from zkp.utility import (
 import numpy as np
 from scipy.stats import chisquare, pearsonr
 
+# ----------------------- Experimento 3: Teste de Resistência ------------------
 
 def experimento_resistencia(n=10000, p_bits=512, insecure=False):
     """

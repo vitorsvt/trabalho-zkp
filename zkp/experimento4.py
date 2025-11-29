@@ -5,7 +5,6 @@ from zkp.utility import *
 # ----------------------- Experimento 4: Performance e Escalabilidade ------------------
 
 class SimpleBloomFilter:
-    """Implementação simples de Bloom filter sem bibliotecas externas."""
     def __init__(self, n_items_estimate, bits_per_item=10, k_hashes=4):
         # tamanho do bit array
         self.m = max(1024, n_items_estimate * bits_per_item)
@@ -66,7 +65,7 @@ def experimento_performance_scalabilidade(
         results[p_bits] = {}
         for n in token_counts:
             print(f'\n-- Tokens: n = {n} --')
-            # gerar n credenciais (pode ser custoso para n grande)
+            # gerar n credenciais
             voters = []
             for _ in range(n):
                 a, A = keygen(params)

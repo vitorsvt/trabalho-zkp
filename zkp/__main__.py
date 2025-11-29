@@ -61,12 +61,14 @@ def main(run_perf=False,run_robust = False):
             print_results(results)
         except NameError:
             print(results)
+
     # -------- Exemplo de execução do Experimento 5  --------------
 
     if run_robust:
         print("\n---------- EXECUTANDO EXPERIMENTO 5 - ROBUSTEZ CONTRA ATAQUES ----------\n")
         print("Executando Experimento 5: robustez/ataques (pode demorar)...")
         results_robust = experimento_robustez(params, voters, trials_per_scenario=200)
+
 
 if __name__ == "__main__":
     import argparse

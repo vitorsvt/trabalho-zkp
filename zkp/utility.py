@@ -71,10 +71,10 @@ def hash_to_zq(A, Y, q, p=None):
 
 def hash_to_zq_insecure(A, Y, q, p=None):
     """
-    Hash(A || Y) -> integer mod q
-    
-    Utiliza uma simples soma dos bytes para a realização do hash
-    ao invés da utilização de um algoritmo como o SHA-256
+    O hash gera um número aleatório de
+    tamanho até q, isso ocasiona na obtenção
+    de challenges distintos para as
+    mesmas entradas
     """
 
     if p is not None:
@@ -83,8 +83,14 @@ def hash_to_zq_insecure(A, Y, q, p=None):
         # comprimentos relativos
         blen = max((A.bit_length() + 7)//8, (Y.bit_length() + 7)//8)
     data = int_to_bytes(A, blen) + int_to_bytes(Y, blen)
-    digest = sum(data)
-    return digest % q
+
+    digest = hashlib.sha256(data).digest()
+    trunc = digest[:1] # Utiliza apenas 1 byte
+
+    number = int.from_bytes(trunc, 'big') % q
+    
+    # Retorna o número com uma possível variação (+1)
+    return secrets.randbelow(2) + number
 
 
 # ----------------------------- API do protocolo --------------------------------------
@@ -142,9 +148,24 @@ def verificar_prova(A, Y, r, params: PublicParams):
 
 def gerar_prova_insegura(a, A, params: PublicParams):
     """Gera prova π = (Y, r)"""
-    q = params.q; p = params.p; g = params.g
+    q = params.q
+    p = params.p
+    g = params.g
+    
     y = secrets.randbelow(50)
     Y = pow(g, y, p)
     c = hash_to_zq(A, Y, q, p)
+    r = (y + (c * a)) % q
+    return Y, r
+
+def gerar_prova_insegura_com_hash_inseguro(a, A, params: PublicParams):
+    """Gera prova π = (Y, r)"""
+    q = params.q
+    p = params.p
+    g = params.g
+    
+    y = secrets.randbelow(50)
+    Y = pow(g, y, p)
+    c = hash_to_zq_insecure(A, Y, q)
     r = (y + (c * a)) % q
     return Y, r

@@ -2,7 +2,7 @@ from zkp.utility import (
     setup,
     keygen,
     gerar_prova,
-    gerar_prova_insegura,
+    gerar_prova_insegura_com_hash_inseguro,
     hash_to_zq,
     hash_to_zq_insecure,
 )
@@ -36,6 +36,7 @@ def experimento_resistencia(n=10000, p_bits=512, insecure=False):
 
         # Transformar em números de tamanho apropriado ao numpy
         reduced = np.array([v / params.q for v in values], dtype=float)
+
         # Gerar o histograma observado
         observed, _ = np.histogram(reduced, bins=bins)
         # Gerar o histograma esperado
@@ -47,6 +48,7 @@ def experimento_resistencia(n=10000, p_bits=512, insecure=False):
 
     # Caso houve repetição de Y em alguma das provas geradas
     repeated = False
+    found_a = False
 
     # Geração de um eleitor
     a, A = keygen(params)
@@ -56,15 +58,32 @@ def experimento_resistencia(n=10000, p_bits=512, insecure=False):
     rs = []  # Lista de valores de r
 
     for _ in range(n):
-        if not insecure:
+        if insecure:
+            Y, r = gerar_prova_insegura_com_hash_inseguro(a, A, params)
+            c = hash_to_zq_insecure(A, Y, params.q)
+        else:
             Y, r = gerar_prova(a, A, params)
             c = hash_to_zq(A, Y, params.q)
-        else:
-            Y, r = gerar_prova_insegura(a, A, params)
-            c = hash_to_zq_insecure(A, Y, params.q)
 
         if Y in Ys:  # Caso o Y já tenha sido registrado
+            r2, c2 = Ys[Y]
+            if c == c2: # assinatura idêntica, não há o que fazer
+                continue
+
+            # assinaturas distintas para o mesmo Y
+            # r1 = y + c1 * a (mod q)
+            # r2 = y + c2 * a (mod q)
+
             repeated = True
+
+            numerator = (r - r2) % params.q
+            denominator = (c - c2) % params.q
+            inverted_denominator = pow(denominator, -1, params.q)
+            a2 = (numerator * inverted_denominator) % params.q
+
+            if a == a2:
+                found_a = True
+
             continue
 
         Ys[Y] = (r, c)
@@ -93,8 +112,6 @@ def experimento_resistencia(n=10000, p_bits=512, insecure=False):
     result = pearsonr(rs_current, rs_next)
     correlation = result.correlation
 
-    print("Correlação de Pearson (r[i] vs r[i+1])")
-
     if abs(correlation) > 0.05:
         print("❌ Correlação significativa identificada entre provas consecutivas")
     else:
@@ -103,4 +120,7 @@ def experimento_resistencia(n=10000, p_bits=512, insecure=False):
     if repeated:
         print("❌ Y repetido obtido de provas distintas")
     else:
-        print("✅ Não foi possível extrair 'a' de nenhum eleitor")
+        print("✅ Y não se repetiu em provas distintas")
+
+    if found_a:
+        print('❌ Valor de "a" obtido a partir de valores de Y repetidos')
